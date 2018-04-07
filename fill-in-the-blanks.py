@@ -43,38 +43,54 @@ def level(input):
 #if user lose, give another chance until reaching 4 mistakes, start the game again 
 def game(question,answer):
 	print question
-	i = 0 #to hold
-	attemp = 1 #To limit number of mistakes
-	while len(blanks)>i:
-		userAnswer = raw_input("What is " + blanks[i] +"?")
+	index = 0 #to hold
+	attemp = 0 #To limit number of mistakes
+	maxAttempts=4 #although the limit, it is 4 but because we start with 1
+	while len(blanks)>index:
+		userAnswer = raw_input("What is " + blanks[index] +"?")
 		#Case 1: When the user enter right answer
-		if userAnswer.lower() == answer[i]:
-			print "Right Answer! :)"
-			question = question.replace(blanks[i],answer[i])
-			print question
-			i+=1 #increse the i
-			#means 4 right answers, User win
-			if (i==4):
-				print "CONGRATS ! You win !!!!!!"
-				playAgain = raw_input("Would you like to try another level ?").lower()
-				done=False
-				while ((playAgain!='yes' or playAgin!='no') and done==False): #to handle other inputs
-					if playAgain == 'yes':
-						level(raw_input("Please, select the level: \n1-Easy 2-Medium 3-Hard 4-Quit\n"))
-					elif playAgain == 'no':
-						print "See you again"
-						done=True
-					else:
-						playAgain = raw_input("Enter either yes or no?").lower()
-		#When the user enter wrong answer
+		if userAnswer.lower() == answer[index]:
+			question = updateTheSentence(question,answer,index)
+			index+=1 #increse the index by 1
+		#Case 2: When the user enter wrong answer
 		else:
 			#ask user again
-			print "Oops ! let's try again, you can do it! Note: Max number of mistakes is 4. You have made "+ str(attemp) +" mistake"
 			attemp+=1
+			print "Oops ! let's try again, you can do it! Note: Max number of mistakes is 4. You have made "+ str(attemp) +" mistake"
 			#reaching max number of attempting 4 so when it becomes 5 this is max
-			if attemp==5:
+			if attemp==maxAttempts:
 				print "You need to study harder. Let's start the game all over again!"
 				level(raw_input("Please, select the level: \n1-Easy 2-Medium 3-Hard 4-Quit\n"))
+
+#win function that takes no input and print the winning message for the user
+#it asks the user if he/she wants to play again
+def win():
+	done=False #flag if the user want to quit
+	print "CONGRATS ! You win !!!!!!"
+	playAgain = raw_input("Would you like to try another level ?").lower()
+	while ((playAgain!='yes' or playAgain!='no') and done==False): #to handle other inputs
+		if playAgain == 'yes':
+			level(raw_input("Please, select the level: \n1-Easy 2-Medium 3-Hard 4-Quit\n"))
+		elif playAgain == 'no':
+			print "See you again"
+			done=True
+			return done #to stop the game
+		else:
+			playAgain = raw_input("Enter either yes or no?").lower()
+
+#update the sentence with the correct answer
+#it takes the question, answer and current index to perform the replacement task
+#print the new sentance and if the user has filled all the blanks correctly, it call win() function
+def updateTheSentence(question,answer,index):
+	print "Right Answer! :)"
+	question = question.replace(blanks[index],answer[index])
+	print question
+	index+=1 #increse the index by 1
+	#means 4 right answers, User win
+	numberOfBlanks=4
+	if (index==numberOfBlanks):
+		win();
+	return question 
 
 
 # Greetings
